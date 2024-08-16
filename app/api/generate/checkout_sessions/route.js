@@ -39,7 +39,3 @@ const params = {
     status: 200,
     })
 }
-
-
-
-
