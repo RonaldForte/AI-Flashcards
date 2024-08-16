@@ -1,95 +1,109 @@
 import Image from "next/image";
-import styles from "./page.module.css";
+import getStripe from "./utils/get-stripe";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { AppBar, Container, Grid, Toolbar, Typography, Box, Button } from "@mui/material";
+import Head from 'next/head'
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+    <Container maxWidth="100vw">
+      <Head>
+        <title>Flashcard</title>
+        <meta name="description" content="Create flashcard from your text" />
+      </Head>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" style={{ flexGrow: 1 }}>
+            Flashcard
+          </Typography>
+          <SignedOut>
+            <Button color="inherit" href="/sign-in">Login</Button>
+            <Button color="inherit" href="/sign-up">Sign Up</Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton></UserButton>
+          </SignedIn>
+        </Toolbar>
+      </AppBar>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 'calc(65vh - 64px)',
+          textAlign: 'center',
+        }}
+      >
+        <Typography variant="h2">Welcome to Flashcard</Typography>
+        <Typography variant="h5" sx={{ mt: 2 }}>
+          The easiest way to make educational flashcards from your text!
+        </Typography>
+        <Button variant="contained" color="primary" sx={{ mt: 4 }}>
+          Get Started
+        </Button>
+      </Box>
+      <Grid container spacing={4} justifyContent="center">
+        <Box
+          sx={{
+            p: 3,
+            width: '100%',
+            textAlign: 'center',
+          }}
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+          <Typography variant="h4">Pricing</Typography>
+        </Box>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item xs={12} sm={10} md={5}>
+            <Box
+              sx={{
+                p: 4,
+                border: '1px solid gray',
+                borderRadius: 2,
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '100%',
+              }}
+            >
+              <Typography variant="h4">Basic Plan</Typography>
+              <Typography variant="h5">$5 / month</Typography>
+              <Typography>
+                Access to basic flashcard features and limited storage.
+              </Typography>
+              <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+                Choose Basic
+              </Button>
+            </Box>
+          </Grid>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <Grid item xs={12} sm={10} md={5}>
+            <Box
+              sx={{
+                p: 4,
+                border: '1px solid gray',
+                borderRadius: 2,
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '100%',
+              }}
+            >
+              <Typography variant="h4">Premium Plan</Typography>
+              <Typography variant="h5">$10 / month</Typography>
+              <Typography>
+                Unlimited flashcards and storage with priority support.
+              </Typography>
+              <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+                Choose Premium
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
