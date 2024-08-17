@@ -1,10 +1,36 @@
+"use client";
+
 import Image from "next/image";
 import getStripe from "./utils/get-stripe";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { AppBar, Container, Grid, Toolbar, Typography, Box, Button } from "@mui/material";
-import Head from 'next/head'
+import Head from 'next/head';
 
-export default function Home() {
+export default function Home() { //change local host before hosting
+  const handleSubmit = async () => {
+    const checkoutSession = await fetch('/api/generate/checkout_session', {
+      method: 'POST',
+      headers: {
+        origin: 'http://localhost:3000' 
+      },
+    });
+    const checkoutSessionJson = await checkoutSession.json();
+
+    if (checkoutSession.statusCode === 500) {
+      console.error(checkoutSession.message);
+      return;
+    }
+
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    });
+
+    if (error) {
+      console.warn(error.message);
+    }
+  };
+
   return (
     <Container maxWidth="100vw">
       <Head>
@@ -21,7 +47,7 @@ export default function Home() {
             <Button color="inherit" href="/sign-up">Sign Up</Button>
           </SignedOut>
           <SignedIn>
-            <UserButton></UserButton>
+            <UserButton />
           </SignedIn>
         </Toolbar>
       </AppBar>
@@ -97,7 +123,7 @@ export default function Home() {
               <Typography>
                 Unlimited flashcards and storage with priority support.
               </Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+              <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
                 Choose Premium
               </Button>
             </Box>
