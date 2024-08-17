@@ -1,4 +1,4 @@
-import { SignUp } from '@clerk/nextjs';
+import { SignIn, SignUp } from '@clerk/nextjs';
 import { AppBar, Container, Box, Typography, Button, Toolbar } from '@mui/material';
 import Link from 'next/link';
 

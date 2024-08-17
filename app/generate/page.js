@@ -1,5 +1,6 @@
+
 'use client'
-import { Container, Box, Typography, Button, TextField, Paper, Grid, CardContent, CardActionArea, DialogContent, DialogContentText, Dialog, DialogTitle, DialogActions } from "@mui/material"
+import { Container, Box, Typography, Button, TextField, Paper, Grid, CardContent, CardActionArea, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material"
 import { useState } from "react"
 import { useUser } from "@clerk/nextjs"
 import {writeBatch} from 'firebase/firestore'
@@ -19,7 +20,7 @@ export default function Generate() {
             method: 'POST',
             body: text,
         }).then((res) => res.json())
-        .then((data) => setFlashcards(data))
+        .then ((data) => setFlashcards(data))
     }
 
     const handleCardClick = (id) => {
@@ -76,14 +77,22 @@ export default function Generate() {
             <Box sx={{mt: 4, mb: 6, display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <Typography variant="h4"> Generate Flashcards </Typography>
                 <Paper sx={{p: 4, width: "100%"}}> 
-                    <TextField value={text} onChange={(e) => setText(e.target.value)} label="Enter text" fullWidth multiline rows={4} variant="outlined" sx={{mb: 2}}/>
-                    <Button variant="contained" color="primary" onClick={handleSubmit} fullWidth> {' '} Submit </Button>
+                    <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
+                        <TextField value={text} onChange={(e) => setText(e.target.value)} label="Enter text" multiline rows={1} variant="outlined" sx={{width: "650px", height: "40px", mb: 2}}/>
+                        <Button variant="contained" color="primary" onClick={handleSubmit} sx={{height: "54px", width: "100px", marginLeft:"16px"}}> {' '} Submit </Button>
+                    </Box>
                 </Paper>
             </Box>
 
             {flashcards.length > 0 && (
-                <Box sx = {{mt: 4}}>
-                    <Typography variant = "h5"> Flashcards Preview </Typography>
+                <Box sx = {{mt: 4, textAlign: 'center'}}>
+                    <Typography
+                        variant = "h5" 
+                        sx={{fontWeight: "bold",
+                        textAlign: "center",
+                        marginBottom: 4
+
+                        }}> Flashcards Preview </Typography>
 
                     <Grid container spacing = {3}>
                         {flashcards.map((flashcard, index) => (
@@ -92,7 +101,7 @@ export default function Generate() {
                                     <CardContent> 
                                         <Box
                                             sx={{perspective: "1000px",
-                                            '& > div' : {   
+                                            '& > div' : {
                                                 transition: 'transform 0.6s',
                                                 transformStyle: 'preserve-3d',
                                                 position:'relative',
@@ -100,6 +109,8 @@ export default function Generate() {
                                                 height:'200px',
                                                 boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
                                                 transform: flipped[index] ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                                                borderRadius: "30px",
+                            
                                             },
 
                                             '& > div > div' : {
@@ -112,10 +123,17 @@ export default function Generate() {
                                                 alignItems: "center",
                                                 padding: 2,
                                                 boxSizing: "border-box",
+                                                borderRadius: "30px", // Ensure the border-radius is applied here
+                                                overflow: 'auto',
+                        
+                                            },
+                                            '& > div > div:nth-of-type(1)': {
+                                                backgroundColor: "#9BEDFF",
                                             },
 
                                             '& > div > div:nth-of-type(2)': {
                                                 transform: 'rotateY(180deg)',
+                                                backgroundColor: "#bcf5bc"
                                             
                                             },
                                             
@@ -123,10 +141,34 @@ export default function Generate() {
                                         >
                                             <div>
                                                 <div>
-                                                    <Typography variant="h5" component="div"> {flashcard.front} </Typography>
+                                                    <Typography
+                                                        variant="h6"
+                                                        component="div"
+                                                        sx={{maxHeight: "100%",
+                                                        overflow: "auto", 
+                                                        wordBreak: "break-word",
+                                                        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+                                                        fontSize: "1.2rem",
+                                                        lineHeight: 1.5,
+                                                        color: "#000",
+                                                        fontWeight: "bold",
+                                                        padding: "10px",
+                                                        }}> {flashcard.front} </Typography>
                                                 </div>
                                                 <div>
-                                                    <Typography variant="h5" component="div"> {flashcard.back} </Typography>
+                                                    <Typography
+                                                        variant="h6"
+                                                        component="div"
+                                                        sx={{maxHeight: "100%", 
+                                                        overflow: "auto", 
+                                                        wordBreak: "break-word",
+                                                        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+                                                        fontSize: "1.2rem",
+                                                        lineHeight: 1.5,
+                                                        color: "#000",
+                                                        padding: "10px",
+                                                        
+                                                        }}> {flashcard.back} </Typography>
                                                 </div>
                                             </div>
                                         </Box>
@@ -135,36 +177,34 @@ export default function Generate() {
                             </Grid>
                         ))}
                     </Grid>
-                    <Box sx={{mt: 4, display: 'flex', justifyContent: 'center'}}>
-                        <Button variant="contained" color="secondary" onClick={handleOpen}>
-                            Save
-                        </Button>
+                    <Box sx={{mt: 4, display: "flex", justifyContent:'center', marginBottom: "30px"}}>
+                        <Button variant="contained" onClick={handleOpen}> Save </Button>
                     </Box>
                 </Box>
             )}
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Save Flashcards</DialogTitle>
+                <DialogTitle> Save Flashcards </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please enter a name for your flashcard's collection
+                        Please enter a name for your flashcards collection
                     </DialogContentText>
-                    <TextField
-                    autoFocus
-                    margin='dense'
-                    label='Collection Name'
-                    type = 'text'
-                    fullWidth value = {name}
-                    onChange={(e) => setName(e.target.value)}
-                    variant='outlined'
+                    <TextField 
+                        autoFocus
+                        margin="dense"
+                        label="Collection Name"
+                        type="text"
+                        fullWidth
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        variant="outlined"
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={saveFlashcards}>Save</Button>
+                    <Button onClick={handleClose}> Cancel </Button>
+                    <Button onClick={saveFlashcards}> Save </Button>
                 </DialogActions>
             </Dialog>
-
         </Container>
     )
 }
