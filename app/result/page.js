@@ -1,57 +1,62 @@
-'use client'
-import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import getStripe from "@/utils/get-stripe"
-import { CircularProgress, Container, Typography, Box } from "@mui/material"
+'use client';
+
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import getStripe from '../utils/get-stripe';
+import { CircularProgress, Container, Typography, Box } from "@mui/material";
 
 const ResultPage = () => {
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const session_id = searchParams.get('session_id')
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const session_id = searchParams.get('session_id');
 
-    const [loading, setLoading] = useState(true)
-    const [session, setSession] = useState(null)
-    const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(true);
+    const [session, setSession] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchCheckoutSession = async () => {
-            if (!session_id) return
+            if (!session_id) {
+                setError("Session ID is missing");
+                setLoading(false);
+                return;
+            }
             try {
-                const res = await fetch(`/api/checkout_session?session_id=${session_id}`)
-                const sessionData = await res.json()
+                const res = await fetch(`/api/checkout_session?session_id=${session_id}`);
+                const sessionData = await res.json();
                 if (res.ok) {
-                    setSession(sessionData)
+                    setSession(sessionData);
                 } else {
-                    setError(sessionData.error)
+                    setError(sessionData.error || "An error occurred");
                 }
             } catch (err) {
-                setError("An error occurred")
+                setError("An error occurred while fetching the session");
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
-        fetchCheckoutSession()
-    }, [session_id])
+        };
+        fetchCheckoutSession();
+    }, [session_id]);
 
     if (loading) {
         return (
-            <Container maxWidth="100vw" sx={{ textAlign: 'center', mt: 4 }}>
+            <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
                 <CircularProgress />
                 <Typography variant="h6">Loading...</Typography>
             </Container>
-        )
+        );
     }
 
     if (error) {
         return (
-            <Container maxWidth="100vw" sx={{ textAlign: 'center', mt: 4 }}>
-                <Typography variant="h6">{error}</Typography>
+            <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
+                <Typography variant="h6" color="error">{error}</Typography>
             </Container>
-        )
+        );
     }
 
     return (
-        <Container maxWidth="100vw" sx={{ textAlign: 'center', mt: 4 }}>
+        <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
             {session?.payment_status === "paid" ? (
                 <>
                     <Typography variant="h4">Thank you for your purchase</Typography>
@@ -73,7 +78,7 @@ const ResultPage = () => {
                 </>
             )}
         </Container>
-    )
-}
+    );
+};
 
-export default ResultPage
+export default ResultPage;
